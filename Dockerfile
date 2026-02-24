@@ -41,8 +41,11 @@ RUN apt-get update -qq && \
 COPY --from=build /usr/local/bundle /usr/local/bundle
 COPY --from=build /rails /rails
 
-# Даем права на выполнение скриптов (ВАЖНО для Linux/Render)
-RUN chmod +x /rails/bin/docker-entrypoint /rails/entrypoint.sh
+# --- ИСПРАВЛЕНИЕ ПРАВ ДОСТУПА ---
+USER root
+# Делаем исполняемыми ВСЕ файлы в папке bin и основной скрипт
+RUN chmod -R +x /rails/bin && chmod +x /rails/entrypoint.sh
+# -------------------------------
 
 RUN useradd rails --create-home --shell /bin/bash && \
     chown -R rails:rails db log storage tmp
