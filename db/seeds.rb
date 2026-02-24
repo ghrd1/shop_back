@@ -1,17 +1,21 @@
 # Создание админа
-if User.count.zero?
+admin_email = 'admin@test.com'
+
+# Ищем пользователя по email, если не находим — создаем
+admin = User.find_or_initialize_by(email: admin_email)
+
+if admin.new_record?
   puts "Создаём тестового админа..."
-  User.create!(
-    email: 'admin@test.com',
-    password: 'password',
-    password_confirmation: 'password',
-    role: 'admin',
-    first_name: 'Admin',
-    last_name: 'User'
-  )
-  puts "Админ создан: admin@test.com / password"
+  admin.password = 'password'
+  admin.password_confirmation = 'password'
+  admin.role = 'admin'
+  admin.first_name = 'Admin'
+  admin.last_name = 'User'
+  admin.save!
+  puts "Админ создан: #{admin_email} / password"
 else
-  puts "Пользователи уже есть, пропускаем создание админа..."
+  puts "Админ с email #{admin_email} уже существует, обновляем роль до admin..."
+  admin.update!(role: 'admin') # На всякий случай убедимся, что роль верная
 end
 
 # Твои товары
@@ -26,5 +30,5 @@ if Item.count.zero?
   end
   puts "Товары созданы!"
 else
-  puts "Товары уже есть, пропускаем..."
+  puts "Товары уже есть, пропускаем создание товаров..."
 end
