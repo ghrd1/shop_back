@@ -17,4 +17,6 @@ test:
 
 production:
   <<: *default
-  database: shop_production
+  # Rails приоритетно смотрит на url, если он задан
+  url: <%= ENV['DATABASE_URL'] %> 
+  database: shop_production # Это будет проигнорировано, если в URL уже есть имя базы
